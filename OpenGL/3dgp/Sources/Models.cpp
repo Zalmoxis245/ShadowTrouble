@@ -72,34 +72,47 @@ void Models::SendProgramSpecificUniforms(Models& m, glm::mat4 matrixView, _3dgl:
 		break;
 	}
 }
-void Models::SetUpModel(Models& m, glm::mat4 matrixView, _3dgl::C3dglModel& model, _3dgl::C3dglProgram& prog) {
-	Properties& properties = m.p;
-	prog.use(true);
-	Models::SendProgramSpecificUniforms(m, matrixView, prog);
-	if (properties.hasTex) {
-		prog.sendUniform("texture0", properties.tex_id);
-		glActiveTexture(GL_TEXTURE0 + properties.tex_id);
-		glBindTexture(GL_TEXTURE_2D, Textures::idTex[properties.tex_id]);
-	}
-	SetUpMatrix(matrixView, properties.transform);
-	prog.sendUniform("matrixModelView", matrixView);
-	//if (model.getName() == teapot.getName())glCullFace(GL_CW);
-	if (properties.model_render_id == -1) model.render(matrixView);
-	else model.render(properties.model_render_id, matrixView);
-	//if (model.getName() == teapot.getName())glCullFace(GL_CCW);
-}
+//void Models::SetUpModel(Models& m, glm::mat4 matrixView, _3dgl::C3dglModel& model, _3dgl::C3dglProgram& prog) {
+//	Properties& properties = m.p;
+//	prog.use(true);
+//	Models::SendProgramSpecificUniforms(m, matrixView, prog);
+//	//Dematerializer
+//	prog.sendUniform("dematerializer", 4); //this is temp
+//	prog.sendUniform("t_dem", std::cosf(Globals::global_time) / 2 + 0.5);
+//	//Dematerializer
+//	if (properties.hasTex) {
+//		prog.sendUniform("texture0", properties.tex_id);
+//		glActiveTexture(GL_TEXTURE0 + properties.tex_id);
+//		glBindTexture(GL_TEXTURE_2D, Textures::idTex[properties.tex_id]);
+//	}
+//	SetUpMatrix(matrixView, properties.transform);
+//	prog.sendUniform("matrixModelView", matrixView);
+//	//if (model.getName() == teapot.getName())glCullFace(GL_CW);
+//	if (properties.model_render_id == -1) model.render(matrixView);
+//	else model.render(properties.model_render_id, matrixView);
+//	//if (model.getName() == teapot.getName())glCullFace(GL_CCW);
+//}
 
 void Models::SetUpModels(glm::mat4 matrixView) {
 	
 	for (Models& m : models) {
+		glActiveTexture(GL_TEXTURE0);
 		Program& prog = Program::programs[m.p.program_id];
 		Properties& properties = m.p;
 		_3dgl::C3dglModel* model = m.m;
 		prog.use(true);
 		Models::SendProgramSpecificUniforms(m, matrixView, prog);
+		//Dematerializer
+		prog.sendUniform("dematerializer", 7); //this is temp
+		glActiveTexture(GL_TEXTURE7);
+		glBindTexture(GL_TEXTURE_2D, Textures::idTex[4]);
+		glActiveTexture(GL_TEXTURE0);
+		prog.sendUniform("dematerializerActive", Globals::dematerializer);
+		//Dematerializer
+		prog.sendUniform("t_dem", std::abs(std::sin(glutGet(GLUT_ELAPSED_TIME) * 0.001f * 0.5f))-0.1f);
+		//Dematerializer
 		if (properties.hasTex) {
-			prog.sendUniform("texture0", properties.tex_id);
-			glActiveTexture(GL_TEXTURE0 + properties.tex_id);
+			prog.sendUniform("texture0", 0);
 			glBindTexture(GL_TEXTURE_2D, Textures::idTex[properties.tex_id]);
 		}
 		glm::mat4 mod = matrixView;

@@ -15,6 +15,7 @@ enum BITMAPS : unsigned char {
 
 struct Textures {
 	static short cnt_gl_texture_id_count;
+	static short cnt_gl_texture0_id;
 	static std::vector<GLuint> idTex;
 	static std::vector<_3dgl::C3dglBitmap> textures;
 

@@ -30,6 +30,11 @@ in vec4 shadowCoord[2];
 out vec4 outColor;
 
 uniform sampler2D texture0;
+//dematerializer
+uniform sampler2D dematerializer;
+uniform float t_dem;
+uniform bool dematerializerActive;
+//dematerializer
 uniform sampler2DShadow shadowMap[2];
 uniform bool hasTex;
 uniform bool receiveShadows;
@@ -123,6 +128,14 @@ float Shadow(int shadow_index){
 
 void main()
 {
+    //Dematerializer
+    if(dematerializerActive){
+        vec2 noiseCoord0 = (vTex == vec2(0,0)) ? vPos.xy * 2.0 : vTex;
+        float noise = texture(dematerializer, noiseCoord0).r;
+        if(noise < t_dem)
+        discard;
+    }
+
     //shadow pre
     float shadow = 1.0;
 
@@ -155,8 +168,6 @@ void main()
     outColor = mix(vec4(fogColour, 1), outColor, fogFactor);//fog
 
     //shadow
-    if(receiveShadows) outColor *= shadow;;
-    
-
+    if(receiveShadows) outColor *= shadow;
     
 }

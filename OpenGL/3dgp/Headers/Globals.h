@@ -8,4 +8,6 @@
 namespace Globals {
 	inline short win_h;
 	inline short win_w;
+	inline float global_time;
+	inline bool dematerializer = true;
 }

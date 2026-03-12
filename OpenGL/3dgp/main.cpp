@@ -50,6 +50,7 @@ using glm::rotate;
 using glm::radians;
 using Globals::win_h;
 using Globals::win_w;
+using Globals::dematerializer;
 
 namespace {
 	auto& Posts = PostEffects::Posts;
@@ -96,6 +97,7 @@ float _fov = 60.f;		// field of view (zoom)
 
 bool init()
 {
+	dematerializer = true;
 	win_h = glutGet(GLUT_WINDOW_HEIGHT);
 	win_w = glutGet(GLUT_WINDOW_WIDTH);
 	//vector<Transform*> transforms = { &table_t, &chair0,
@@ -169,10 +171,11 @@ bool init()
 	if (!AddNew2DTexture("cloth.bmp")) return false;
 	if (!AddNew2DTexture("kingston_logo1k.jpg")) return false;
 	if (!AddNew2DTexture("sand.png")) return false;
+	if (!AddNew2DTexture("perlin.png")) return false;
 
 	//initialising shadows
 	shadows[0].Init(BASIC, 0);
-	shadows[1].Init(BASIC, 1);
+	//shadows[1].Init(BASIC, 1);
 
 	// adding post effects
 	AddNewPost();
@@ -285,6 +288,7 @@ void onRender()
 	float time = glutGet(GLUT_ELAPSED_TIME) * 0.001f;	// time since start in seconds
 	float deltaTime = time - prev;						// time since last frame
 	prev = time;										// framerate is 1/deltaTime
+	Globals::global_time = time;
 	win_h = glutGet(GLUT_WINDOW_HEIGHT);
 	win_w = glutGet(GLUT_WINDOW_WIDTH);
 
@@ -292,7 +296,7 @@ void onRender()
 
 	ShadowPassing = true;
 	shadows[0].createShadowMap(glm::lookAt((vec3)lights[0].pos - vec3(0, 0, 0.1f), (vec3)lights[0].pos + (vec3)lights[0].dir, vec3(0, 1, 0)), time, deltaTime, renderScene, onReshape);
-	shadows[1].createShadowMap(glm::lookAt((vec3)lights[1].pos - vec3(0, 0, 0.1f), (vec3)lights[1].pos + (vec3)lights[1].dir, vec3(0, 1, 0)), time, deltaTime, renderScene, onReshape);
+	//shadows[1].createShadowMap(glm::lookAt((vec3)lights[1].pos - vec3(0, 0, 0.1f), (vec3)lights[1].pos + (vec3)lights[1].dir, vec3(0, 1, 0)), time, deltaTime, renderScene, onReshape);
 	ShadowPassing = false;
 	glBindFramebufferEXT(GL_FRAMEBUFFER, idFBO[Posts[FIRST].fbo]);
 
@@ -380,6 +384,7 @@ void onKeyUp(unsigned char key, int x, int y)
 	case 'z': models[M_Aj].p.currentAnimation++; break;
 	case 'x': models[M_Aj].p.currentAnimation--; break;
 	case 'k': MyAnimation::activated = !MyAnimation::activated; break;
+	case 'l': dematerializer = !dematerializer;
 	}
 }
 

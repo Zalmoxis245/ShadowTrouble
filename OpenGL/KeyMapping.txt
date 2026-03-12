@@ -1,0 +1,9 @@
+Dematerializer(Perlin) Toggle - "L"
+Light Bulb Path Animation Toggle - "K"
+Blur Toggle - "M"
+Moving Wavy Screen Gradient Toggle - "B"
+Inverted Colours Toggle - "N"
+Zoom Toggle - "V"
+Moving Wavy Screen Projection Toggle - "C"
+Lights On/Off Toggle - "1"/"2" depending on the light
+Switch between Aj animations - "Z"/"X"
